@@ -2,6 +2,7 @@ package utilService
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/hasura/go-graphql-client"
 )
@@ -25,7 +26,7 @@ func Client() *graphql.Client {
 	// An HTTP transport that adds headers to requests
 	httpClient := &http.Client{Transport: &headersTransport{headers, http.DefaultTransport}}
 	// Set up the GraphQL client
-	newClient :=  graphql.NewClient("https://vue-shopping.hasura.app/v1/graphql", httpClient)
+	newClient :=  graphql.NewClient( os.Getenv("GRAPHQL_ENDPOINT"), httpClient)
 	return newClient
 }
 

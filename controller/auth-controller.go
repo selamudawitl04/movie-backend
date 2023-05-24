@@ -11,6 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
+
 type AuthResponse struct{
 	ID          string `json:"id"`
 	Email string `json:"email"`
@@ -54,10 +56,13 @@ func Login( ctx *gin.Context){
 			FirstName string `json:"firstName"`
 			LastName string `json:"lastName"`
 			Password string `json:"password"` 
-			Image string `json:"image"` 
+			Image struct{
+				URL string `json:"url"`
+			} `json:"image"` 
 
 		} `graphql:"users(where: {email: {_eq: $email}})"`
 	}
+
 	// variables
 	variables := map[string]interface{}{
 		"email":  inputUser.Input.Arg1.Email,
@@ -70,16 +75,17 @@ func Login( ctx *gin.Context){
 		return
 	}
 
-	//  Check if the user exists and the password is correct
-	if len(query.Users) > 0 && query.Users[0].Password == inputUser.Input.Arg1.Password {
-		// if the user exists, send the token with user data
+	
 
+	//  Check if the user exists and the password is correct
+	if len(query.Users) > 0 && utilService.ComparePasswords(query.Users[0].Password, inputUser.Input.Arg1.Password) {
+		// if the user exists, send the token with user data
 		var response AuthResponse
 		response.Email = query.Users[0].Email
 		response.FirstName = query.Users[0].FirstName
 		response.LastName = query.Users[0].LastName
 		response.ID = query.Users[0].ID
-		response.Image = query.Users[0].Image
+		response.Image = query.Users[0].Image.URL
 		sendToken(ctx, "user", response)
 		return
 	}
@@ -116,12 +122,20 @@ func Signup(ctx *gin.Context) {
 		} `graphql:"insert_users(objects: {firstName: $firstName, lastName: $lastName, email: $email, password: $password})"`
 	}
 
+
+	password, err4 := utilService.HashPassword(newUser.Input.Arg1.Password)
+
+	if err4 != nil {
+		ctx.JSON(400, gin.H{"error": err4.Error()})
+		return
+	}
+
 	// set variable
 	variables := map[string]interface{}{
 		"firstName":  newUser.Input.Arg1.FirstName,
 		"lastName":  newUser.Input.Arg1.LastName,
 		"email":  newUser.Input.Arg1.Email,
-		"password":  newUser.Input.Arg1.Password,
+		"password": password,
 	}
 	// execute the request
 	err := utilService.Client().Mutate(context.Background(), &mutation, variables)

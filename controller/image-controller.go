@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"gilab.com/progrmaticreviwes/golang-gin-poc/utilService"
 	"github.com/cloudinary/cloudinary-go"
@@ -27,8 +28,7 @@ func UploadImage(ctx *gin.Context){
 
 	var urls []string
 	// Set up the Cloudinary configuration
-	cld, _ := cloudinary.NewFromParams("selamu-dawit", "349479795881572", "_PCvEGOJlFmS6wMA6z1JZ93b53o")
-
+	cld, _ := cloudinary.NewFromParams(os.Getenv("CLOUDINARY_CLOUD_NAME"), os.Getenv("CLOUDINARY_API_KEY"), os.Getenv("CLOUDINARY_API_SECRET"))
 	var images = inputData.Input.Arg1.Images
 
 	for index := range  images{

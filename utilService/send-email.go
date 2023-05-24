@@ -19,7 +19,7 @@ func SendEmail(email string, token string) (string, error) {
 	 auth := smtp.PlainAuth("", "selamudev@gmail.com", "sele2inttroduction", "smtp.gmail.com")
 	 err1:= smtp.SendMail("smtp.gmail.com:587", auth, from.Address, []string{to.Address}, []byte(msg))
 	 if err1 != nil {
-		 return "", err1
+		return "", err1
 	 }
  
 	 return "Email sent", nil

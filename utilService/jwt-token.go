@@ -1,6 +1,7 @@
 package utilService
 
 import (
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -32,8 +33,7 @@ func GetToken(userId string, role string, ) (string, error){
 			"x-hasura-user-id":       userId,           // The user ID
 		},
 	}
-	secretKey := "my-jwt-secret-key-123456789"
-	token, err := createJWTToken(payload, secretKey)
+	token, err := createJWTToken(payload, os.Getenv("JWT_SECRET"))
 	if err != nil {
 		return "", err
 	}
