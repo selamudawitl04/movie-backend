@@ -11,11 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// image
+
 func UploadImage(ctx *gin.Context){
 	// Get the image data from the request body
 	var inputData struct{
 		Input struct{
-			Arg1 struct{	
+			Arg1 struct{
+				Image string `json:"image"`	
 				Images [] string `json:"images"`
 			} `json:"arg1"`
 		} `json:"input"`
@@ -28,11 +31,13 @@ func UploadImage(ctx *gin.Context){
 
 	var urls []string
 	// Set up the Cloudinary configuration
-	cld, _ := cloudinary.NewFromParams(os.Getenv("CLOUDINARY_CLOUD_NAME"), os.Getenv("CLOUDINARY_API_KEY"), os.Getenv("CLOUDINARY_API_SECRET"))
+	cld, _ := cloudinary.NewFromParams(os.Getenv("CLOUDINARY_CLOUD_NAME"), os.Getenv("CLOUDINARY_API_KEY"), os.Getenv("CLOUDINARY_SECRET"))
 	var images = inputData.Input.Arg1.Images
 
-	for index := range  images{
+	// the cover image url is last url in the array
+	images = append(images, inputData.Input.Arg1.Image)
 
+	for index := range  images{
 		// Upload the image to Cloudinary
 		response , err := cld.Upload.Upload(ctx.Request.Context(), images[index], uploader.UploadParams{
 			PublicID: utilService.PublicID(),

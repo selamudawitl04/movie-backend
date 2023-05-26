@@ -19,6 +19,7 @@ type AuthResponse struct{
 	FirstName string `json:"firstName"`
 	LastName string `json:"lastName"`
 	Image string `json:"image"`
+	Role string `json:"role"`
 	Token string `json:"token"`
 }
 
@@ -56,6 +57,7 @@ func Login( ctx *gin.Context){
 			FirstName string `json:"firstName"`
 			LastName string `json:"lastName"`
 			Password string `json:"password"` 
+			Role string `json:"role"`
 			Image struct{
 				URL string `json:"url"`
 			} `json:"image"` 
@@ -86,7 +88,8 @@ func Login( ctx *gin.Context){
 		response.LastName = query.Users[0].LastName
 		response.ID = query.Users[0].ID
 		response.Image = query.Users[0].Image.URL
-		sendToken(ctx, "user", response)
+		response.Role = query.Users[0].Role
+		sendToken(ctx, query.Users[0].Role, response)
 		return
 	}
 	ctx.JSON(400, gin.H{"message": "Invalid credentials"})

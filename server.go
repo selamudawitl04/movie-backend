@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-
 	"gilab.com/progrmaticreviwes/golang-gin-poc/controller"
 	"gilab.com/progrmaticreviwes/golang-gin-poc/middlewares"
 	"github.com/gin-gonic/gin"
