@@ -1,28 +1,42 @@
 package utilService
 
 import (
+	"bytes"
 	"fmt"
-	"net/mail"
+	"html/template"
 	"net/smtp"
 )
 
+type EmailData struct {
+    Link string
+	Header string
+}
+
 // send email
-func SendEmail(email string, token string) (string, error) {
+func SendEmail(email string, token string, header string) (string, error) {
 	 // Send an email to the user with a link to reset their password
-	 resetURL := "http://localhost:8080/login"
-	 from := mail.Address{Name: "Agenagn", Address: "selamu.dawit@aastustudent.edu.et"}
-	 to := mail.Address{Name: "Selamu Dawit", Address: email}
-	 subject := "Password reset request"
-	 body := fmt.Sprintf("To reset your password, please follow this link: %s?token=%s", resetURL, token)
+	 from := "selamu.dawit@aastustudent.edu.et"
+	 to := "selamudev@gmail.com"
+	  // Create the reset URL with the token
+	 resetURL := "http://localhost:3000/auth/resetPassword/" + token
+	 auth := smtp.PlainAuth("", "bb0fbe593f233b", "2f47796776dd86", "sandbox.smtp.mailtrap.io")
+	
+	t, _ := template.ParseFiles("template.html")
+
+	var body bytes.Buffer   
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body.Write([]byte(fmt.Sprintf("Subject: This is a test subject \n%s\n\n", mimeHeaders)))
+	   
+
+	 // Define the email data
+	emailData := EmailData{
+        Link: resetURL,
+		Header: header,
+    }
+	t.Execute(&body, emailData)
  
-	 msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s", from.String(), to.String(), subject, body)
-	 auth := smtp.PlainAuth("", "selamudev@gmail.com", "sele2inttroduction", "smtp.gmail.com")
-	 err1:= smtp.SendMail("smtp.gmail.com:587", auth, from.Address, []string{to.Address}, []byte(msg))
-	 if err1 != nil {
-		return "", err1
-	 }
- 
-	 return "Email sent", nil
+	 err := smtp.SendMail("sandbox.smtp.mailtrap.io:2525", auth, from, []string{to}, body.Bytes())
+	 return "Email sent", err
 }
 
 

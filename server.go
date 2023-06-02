@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+
 	"gilab.com/progrmaticreviwes/golang-gin-poc/controller"
 	"gilab.com/progrmaticreviwes/golang-gin-poc/middlewares"
 	"github.com/gin-gonic/gin"
@@ -20,13 +21,14 @@ func main() {
 	// middlewares
 	server.Use(middlewares.Logger())
 	server.Use(middlewares.CorsMiddleware())
-
 	// routes
 	server.POST("/login", controller.Login)
 	server.POST("/signup", controller.Signup)
 	server.POST("/forgotPassword", controller.ForgotPassword)
 	server.POST("/resetPassword", controller.ResetPassword)
-	server.POST("/changePassword", controller.ChangePassword)
+	server.POST("/updateUser", controller.UpdateUser)
 	server.POST("/uploadImage", controller.UploadImage)
+	server.POST("/changeStatus", controller.ChangeStatus)
+	server.POST("/requestRegister", controller.RequestRegister)
 	server.Run(":7000")
 }

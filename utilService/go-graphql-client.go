@@ -18,7 +18,6 @@ func (t *headersTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 	}
 	return t.base.RoundTrip(req)
 }
-
 func Client() *graphql.Client {	
 	// Set up the HTTP client with the request headers
 	headers := http.Header{}
@@ -29,4 +28,6 @@ func Client() *graphql.Client {
 	newClient :=  graphql.NewClient( os.Getenv("GRAPHQL_ENDPOINT"), httpClient)
 	return newClient
 }
+
+// 
 
