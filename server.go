@@ -29,6 +29,6 @@ func main() {
 	server.POST("/updateUser", controller.UpdateUser)
 	server.POST("/uploadImage", controller.UploadImage)
 	server.POST("/changeStatus", controller.ChangeStatus)
-	server.POST("/requestRegister", controller.RequestRegister)
+	server.POST("/sendMessage", controller.SendMessage)
 	server.Run(":7000")
 }
