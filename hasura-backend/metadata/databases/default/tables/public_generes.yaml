@@ -1,0 +1,32 @@
+table:
+  name: generes
+  schema: public
+array_relationships:
+  - name: movies_generes
+    using:
+      foreign_key_constraint_on:
+        column: genere_id
+        table:
+          name: movies_generes
+          schema: public
+select_permissions:
+  - role: anmu
+    permission:
+      columns:
+        - name
+        - id
+      filter: {}
+  - role: anonymous
+    permission:
+      columns:
+        - name
+        - id
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+        - name
+        - id
+      filter: {}
+      limit: 0

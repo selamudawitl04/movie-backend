@@ -1,0 +1,67 @@
+table:
+  name: ratings
+  schema: public
+object_relationships:
+  - name: movie
+    using:
+      foreign_key_constraint_on: movie_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
+insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      columns:
+        - rating
+        - id
+        - movie_id
+        - user_id
+select_permissions:
+  - role: anmu
+    permission:
+      columns:
+        - rating
+        - id
+        - movie_id
+        - user_id
+      filter: {}
+  - role: anonymous
+    permission:
+      columns:
+        - rating
+        - id
+        - movie_id
+        - user_id
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+        - rating
+        - id
+        - movie_id
+        - user_id
+      filter: {}
+      allow_aggregations: true
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - rating
+        - id
+        - movie_id
+        - user_id
+      filter:
+        user:
+          id:
+            _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      backend_only: false
+      filter:
+        user:
+          id:
+            _eq: X-Hasura-User-Id

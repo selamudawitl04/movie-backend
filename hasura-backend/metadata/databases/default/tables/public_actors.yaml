@@ -1,0 +1,33 @@
+table:
+  name: actors
+  schema: public
+object_relationships:
+  - name: image
+    using:
+      foreign_key_constraint_on: image_id
+array_relationships:
+  - name: movies_actors
+    using:
+      foreign_key_constraint_on:
+        column: actor_id
+        table:
+          name: movies_actors
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - first_name
+        - last_name
+        - id
+        - image_id
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+        - first_name
+        - last_name
+        - id
+        - image_id
+      filter: {}

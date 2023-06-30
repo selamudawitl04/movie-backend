@@ -1,0 +1,20 @@
+table:
+  name: contacts
+  schema: public
+insert_permissions:
+  - role: anonymous
+    permission:
+      check: {}
+      columns:
+        - body
+        - email
+        - subject
+        - id
+  - role: user
+    permission:
+      check: {}
+      columns:
+        - id
+        - subject
+        - body
+        - email

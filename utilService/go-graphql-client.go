@@ -21,7 +21,7 @@ func (t *headersTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 func Client() *graphql.Client {	
 	// Set up the HTTP client with the request headers
 	headers := http.Header{}
-	headers.Add("X-Hasura-Admin-Secret", "ym6arlrrdMol6MfV156smTMo8L72B6QBLxiyZtWUZl0w0YxctdVN9YTppWkYB5Gn")
+	headers.Add("X-Hasura-Admin-Secret", os.Getenv("HASURA_GRAPHQL_ADMIN_SECRET"))
 	// An HTTP transport that adds headers to requests
 	httpClient := &http.Client{Transport: &headersTransport{headers, http.DefaultTransport}}
 	// Set up the GraphQL client

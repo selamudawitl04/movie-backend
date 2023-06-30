@@ -1,0 +1,84 @@
+table:
+  name: images
+  schema: public
+array_relationships:
+  - name: actors
+    using:
+      foreign_key_constraint_on:
+        column: image_id
+        table:
+          name: actors
+          schema: public
+  - name: directors
+    using:
+      foreign_key_constraint_on:
+        column: image_id
+        table:
+          name: directors
+          schema: public
+  - name: movies
+    using:
+      foreign_key_constraint_on:
+        column: cover_image
+        table:
+          name: movies
+          schema: public
+  - name: movies_images
+    using:
+      foreign_key_constraint_on:
+        column: image_id
+        table:
+          name: movies_images
+          schema: public
+  - name: users
+    using:
+      foreign_key_constraint_on:
+        column: image_id
+        table:
+          name: users
+          schema: public
+insert_permissions:
+  - role: anmu
+    permission:
+      check: {}
+      columns:
+        - url
+        - id
+  - role: user
+    permission:
+      check: {}
+      columns:
+        - url
+        - id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - url
+        - id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - url
+        - id
+      filter: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - url
+        - id
+      filter:
+        users:
+          id:
+            _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      backend_only: false
+      filter:
+        users:
+          id:
+            _eq: X-Hasura-User-Id

@@ -1,0 +1,63 @@
+table:
+  name: users
+  schema: public
+object_relationships:
+  - name: image
+    using:
+      foreign_key_constraint_on: image_id
+array_relationships:
+  - name: bookings
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: bookings
+          schema: public
+  - name: ratings
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: ratings
+          schema: public
+  - name: tickets
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: tickets
+          schema: public
+  - name: users_notifications
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: notifications
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - email
+        - firstName
+        - id
+        - image_id
+        - lastName
+        - password
+        - role
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+      allow_aggregations: true
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - email
+        - firstName
+        - image_id
+        - lastName
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+      check: null

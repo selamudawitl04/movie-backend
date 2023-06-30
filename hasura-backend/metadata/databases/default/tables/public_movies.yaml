@@ -1,0 +1,89 @@
+table:
+  name: movies
+  schema: public
+object_relationships:
+  - name: director
+    using:
+      foreign_key_constraint_on: director_id
+  - name: image
+    using:
+      foreign_key_constraint_on: cover_image
+array_relationships:
+  - name: bookings
+    using:
+      foreign_key_constraint_on:
+        column: movie_id
+        table:
+          name: bookings
+          schema: public
+  - name: movies_actors
+    using:
+      foreign_key_constraint_on:
+        column: movie_id
+        table:
+          name: movies_actors
+          schema: public
+  - name: movies_generes
+    using:
+      foreign_key_constraint_on:
+        column: movie_id
+        table:
+          name: movies_generes
+          schema: public
+  - name: movies_images
+    using:
+      foreign_key_constraint_on:
+        column: movie_id
+        table:
+          name: movies_images
+          schema: public
+  - name: ratings
+    using:
+      foreign_key_constraint_on:
+        column: movie_id
+        table:
+          name: ratings
+          schema: public
+  - name: tickets
+    using:
+      foreign_key_constraint_on:
+        column: movie_id
+        table:
+          name: tickets
+          schema: public
+select_permissions:
+  - role: anmu
+    permission:
+      columns:
+        - duration
+        - discrption
+        - title
+        - date
+        - director_id
+        - id
+      filter: {}
+  - role: anonymous
+    permission:
+      columns:
+        - duration
+        - discrption
+        - status
+        - title
+        - date
+        - cover_image
+        - director_id
+        - id
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+        - cover_image
+        - date
+        - director_id
+        - discrption
+        - duration
+        - id
+        - status
+        - title
+      filter: {}

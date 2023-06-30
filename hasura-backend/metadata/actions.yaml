@@ -1,0 +1,78 @@
+actions:
+  - name: forgotPassword
+    definition:
+      kind: synchronous
+      handler: https://96b4-196-188-12-61.in.ngrok.io/forgotPassword
+      forward_client_headers: true
+      timeout: 15
+    permissions:
+      - role: anmu
+      - role: user
+      - role: anonymous
+  - name: login
+    definition:
+      kind: synchronous
+      handler: http://localhost:7000/login
+      forward_client_headers: true
+      timeout: 10
+    permissions:
+      - role: user
+      - role: anonymous
+  - name: resetPassword
+    definition:
+      kind: synchronous
+      handler: https://96b4-196-188-12-61.in.ngrok.io/resetPassword
+      timeout: 10
+    permissions:
+      - role: anmu
+      - role: user
+      - role: anonymous
+  - name: sendMessage
+    definition:
+      kind: synchronous
+      handler: https://cf7f-169-150-218-74.eu.ngrok.io/sendMessage
+      timeout: 10
+    permissions:
+      - role: user
+      - role: anonymous
+  - name: signup
+    definition:
+      kind: synchronous
+      handler: https://cf7f-169-150-218-74.eu.ngrok.io/signup
+      timeout: 10
+    permissions:
+      - role: anonymous
+  - name: updateUser
+    definition:
+      kind: synchronous
+      handler: https://8e25-196-188-12-61.in.ngrok.io/updateUser
+      timeout: 12
+    permissions:
+      - role: user
+  - name: uploadImages
+    definition:
+      kind: synchronous
+      handler: https://cf7f-169-150-218-74.eu.ngrok.io/uploadImage
+      timeout: 15
+    permissions:
+      - role: user
+custom_types:
+  enums: []
+  input_objects:
+    - name: loginInput
+    - name: signupInput
+    - name: imagesData
+    - name: updateInput
+    - name: forgotInput
+    - name: resetInput
+    - name: requestInput
+    - name: SampleInput
+    - name: messageInput
+  objects:
+    - name: authResponse
+    - name: imagesUrls
+    - name: SampleOutput
+    - name: forgotOutput
+    - name: requestOutput
+    - name: messageOutput
+  scalars: []

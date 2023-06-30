@@ -1,0 +1,117 @@
+type Mutation {
+  forgotPassword(
+    arg1: forgotInput!
+  ): forgotOutput
+}
+
+type Mutation {
+  login(
+    arg1: loginInput!
+  ): authResponse
+}
+
+type Mutation {
+  resetPassword(
+    arg1: resetInput!
+  ): authResponse
+}
+
+type Mutation {
+  sendMessage(
+    arg1: messageInput!
+  ): messageOutput
+}
+
+type Mutation {
+  signup(
+    arg1: signupInput!
+  ): authResponse
+}
+
+type Mutation {
+  updateUser(
+    arg1: updateInput!
+  ): authResponse
+}
+
+type Mutation {
+  uploadImages(
+    arg1: imagesData!
+  ): imagesUrls
+}
+
+input loginInput {
+  email: String!
+  password: String!
+}
+
+input signupInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+}
+
+input imagesData {
+  images: [String]!
+  image: String!
+}
+
+input updateInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  newPassword: String!
+}
+
+input forgotInput {
+  email: String!
+}
+
+input resetInput {
+  password: String!
+  token: String!
+}
+
+input requestInput {
+  email: String!
+}
+
+input SampleInput {
+  username: String!
+  password: String!
+}
+
+input messageInput {
+  email: String!
+  message: String!
+  subject: String!
+}
+
+type authResponse {
+  id: String!
+  token: String!
+  role: String!
+}
+
+type imagesUrls {
+  urls: [String]!
+}
+
+type SampleOutput {
+  accessToken: String!
+}
+
+type forgotOutput {
+  message: String!
+}
+
+type requestOutput {
+  message: String!
+}
+
+type messageOutput {
+  message: String!
+}
+

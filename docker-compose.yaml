@@ -1,0 +1,28 @@
+version: '3.6'
+services:
+  # authorizer:
+  #   container_name: "bms_auth_api"
+  #   network_mode: host
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: .
+  #   env_file:
+  #     - .env.authorizer
+  graph:
+    container_name: bms_graph
+    network_mode: host
+    image: hasura/graphql-engine:v2.13.2
+    # depends_on:
+    #   - authorizer
+    #   - server
+    env_file:
+      - .env
+  server:
+    container_name: bms_server
+    network_mode: host
+    build:
+      dockerfile: server.dockerfile
+      context: .
+    restart: always
+    env_file:
+      - go_server.env
