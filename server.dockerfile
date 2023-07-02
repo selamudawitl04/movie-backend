@@ -1,19 +1,21 @@
-FROM golang:alpine
 
-COPY ./server /server
+# Use an official Go runtime as a parent image
+FROM golang:1.19-alpine
 
-COPY ./publicKey.pem /server/publicKey.pem
+# Set the working directory to /app
+WORKDIR /app
 
-COPY ./privateKey.pem /server/privateKey.pem
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-WORKDIR /server
+# Install any necessary dependencies
+RUN go mod download
 
-# ENV GIN_MODE=${GIN_MODE}
+# Build the Go app
+RUN go build -o myapp
 
-# RUN go mod download
+# Expose port 8080 for the app to listen on
+EXPOSE 8080
 
-RUN go mod tidy
-
-RUN go build -o server
-
-CMD ["/server/server"]
+# Run the app when the container starts
+CMD ["./myapp"]

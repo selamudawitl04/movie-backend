@@ -9,7 +9,7 @@ import (
 )
 func init() {
     // Load environmental variables from .env file
-    err := godotenv.Load()
+    err := godotenv.Load("go_server.env")
     if err != nil {
         log.Fatal("Error loading .env file")
     }
@@ -29,5 +29,8 @@ func main() {
 	server.POST("/uploadImage", controller.UploadImage)
 	server.POST("/changeStatus", controller.ChangeStatus)
 	server.POST("/sendMessage", controller.SendMessage)
+	server.POST("CheckAPI", controller.CheckAPI)
+	
+		
 	server.Run(":7000")
 }

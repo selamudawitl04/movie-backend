@@ -106,11 +106,15 @@ func Signup(ctx *gin.Context) {
 			} `json:"arg1"`
 		} `json:"input"`
     }
+
 	var newUser inputUser
     if err := ctx.ShouldBindJSON(&newUser); err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
+	fmt.Printf("%+v\n", newUser, "new user coming")
+	return
+
 	//3. Define the GraphQL mutation string
 	var mutation struct {
 		InsertUsers struct {	
@@ -144,9 +148,40 @@ func Signup(ctx *gin.Context) {
 	response.ID = mutation.InsertUsers.Returning[0].ID
 	sendToken(ctx, "user", response)
 }
+
+// check api controller
+func CheckAPI( ctx *gin.Context){
+	var input struct {
+		FirstName string `json:"firstName"`
+		LastName string `json:"lastName"`
+	}
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println(input.FirstName)
+	fmt.Println(input.LastName)
+	ctx.JSON(200, gin.H{"message": "API is working"})
+}
+
 // forgot password controller
 func ForgotPassword( ctx *gin.Context){
 	//1. Get user data from request body
+
+	var input struct {
+		Email string `json:"email"`
+		
+	}
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println(input.Email)
+	ctx.JSON(200, gin.H{"message": "API is working"})
+
+	return 
 	var inputUser struct {
 		Input struct{
 			Arg1 struct{
@@ -170,6 +205,7 @@ func ForgotPassword( ctx *gin.Context){
 	variables := map[string]interface{}{
 		"email":  inputUser.Input.Arg1.Email,
 	}
+	fmt.Println(inputUser.Input.Arg1.Email, "email comes here")
 	//4 execute the request 
 	err2 := utilService.Client().Query(context.Background(), &query, variables)
 	if err2 != nil {

@@ -2,9 +2,17 @@ actions:
   - name: forgotPassword
     definition:
       kind: synchronous
-      handler: https://96b4-196-188-12-61.in.ngrok.io/forgotPassword
+      handler: https://localhost:7000/forgotPassword
       forward_client_headers: true
       timeout: 15
+      request_transform:
+        body:
+          action: transform
+          template: "{\n  \n    \"email\": {{$body.input.arg1.email}}\n  \n}"
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
     permissions:
       - role: anmu
       - role: user
@@ -15,6 +23,14 @@ actions:
       handler: http://localhost:7000/login
       forward_client_headers: true
       timeout: 10
+      request_transform:
+        body:
+          action: transform
+          template: "{\n  \"email\" :{{$body.input.arg1.email}},\n  \"password\" :{{$body.input.arg1.password}}\n  \n}"
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
     permissions:
       - role: user
       - role: anonymous
@@ -38,7 +54,7 @@ actions:
   - name: signup
     definition:
       kind: synchronous
-      handler: https://cf7f-169-150-218-74.eu.ngrok.io/signup
+      handler: http://localhost:7000/signup
       timeout: 10
     permissions:
       - role: anonymous
