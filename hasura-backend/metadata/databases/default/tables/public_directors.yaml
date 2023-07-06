@@ -13,6 +13,12 @@ array_relationships:
         table:
           name: movies
           schema: public
+computed_fields:
+  - name: no_of_movie
+    definition:
+      function:
+        name: count_movies_for_directors
+        schema: public
 select_permissions:
   - role: anmu
     permission:

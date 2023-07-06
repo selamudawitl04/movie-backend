@@ -9,12 +9,33 @@ insert_permissions:
         - body
         - email
         - subject
+        - date
         - id
   - role: user
     permission:
       check: {}
       columns:
-        - id
-        - subject
         - body
         - email
+        - subject
+        - date
+        - id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - body
+        - email
+        - subject
+        - date
+        - id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - body
+        - email
+        - subject
+        - date
+        - id
+      filter: {}

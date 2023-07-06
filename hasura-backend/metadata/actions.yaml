@@ -8,7 +8,7 @@ actions:
       request_transform:
         body:
           action: transform
-          template: "{\n  \n    \"email\": {{$body.input.arg1.email}}\n  \n}"
+          template: "{\n  \n  \"email\": {{$body.input.arg1.email}}\n  \n}"
         method: POST
         query_params: {}
         template_engine: Kriti
@@ -46,8 +46,16 @@ actions:
   - name: sendMessage
     definition:
       kind: synchronous
-      handler: https://cf7f-169-150-218-74.eu.ngrok.io/sendMessage
+      handler: http://localhost:7000/sendMessage
       timeout: 10
+      request_transform:
+        body:
+          action: transform
+          template: "{\n  \n    \"email\": {{$body.input.arg1.email}},\n    \"message\": {{$body.input.arg1.message}},\n     \"subject\": {{$body.input.arg1.subject}}\n  \n}"
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
     permissions:
       - role: user
       - role: anonymous
@@ -56,12 +64,18 @@ actions:
       kind: synchronous
       handler: http://localhost:7000/signup
       timeout: 10
+      request_transform:
+        body:
+          action: transform
+          template: "{\n    \"firstName\": {{$body.input.arg1.firstName}},\n    \"lastName\": {{$body.input.arg1.lastName}},\n    \"email\": {{$body.input.arg1.email}},\n    \"password\": {{$body.input.arg1.password}}\n  \n}"
+        template_engine: Kriti
+        version: 2
     permissions:
       - role: anonymous
   - name: updateUser
     definition:
       kind: synchronous
-      handler: https://8e25-196-188-12-61.in.ngrok.io/updateUser
+      handler: https://localhost:7000/updateUser
       timeout: 12
     permissions:
       - role: user

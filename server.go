@@ -19,7 +19,7 @@ func main() {
 	server := gin.New()
 	// middlewares
 	server.Use(middlewares.Logger())
-	server.Use(middlewares.CorsMiddleware())
+	// server.Use(middlewares.CorsMiddleware())
 	// routes
 	server.POST("/login", controller.Login)
 	server.POST("/signup", controller.Signup)

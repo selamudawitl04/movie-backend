@@ -1,0 +1,21 @@
+Docker setup on local machine  DONE
+Computed properties and trigers DONE
+Backend api protection using JWT token 
+User get notified when admin update the date of movie:  with subscrption
+Admin get notified when new contact us message is added: with subscrption
+Changing movie status when ticket sold out: with subscrption
+FAQ 
+UI updating 
+Sorting and Pagination
+Animation and Transtion with vue class and other libraris
+Code optimiization and reusablity
+Deployement
+Third party authentication
+
+
+hasura metadata export --endpoint https://vue-shopping.hasura.app --admin-secret ym6arlrrdMol6MfV156smTMo8L72B6QBLxiyZtWUZl0w0YxctdVN9YTppWkYB5Gn 
+hasura metadata export --endpoint https://my-project.hasura.app --admin-secret my-admin-secret -o ~/metadata.yaml
+
+
+1. change to gmail
+2. 

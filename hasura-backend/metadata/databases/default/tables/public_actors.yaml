@@ -13,6 +13,12 @@ array_relationships:
         table:
           name: movies_actors
           schema: public
+computed_fields:
+  - name: no_of_movie
+    definition:
+      function:
+        name: count_movies_for_actor
+        schema: public
 select_permissions:
   - role: anonymous
     permission:

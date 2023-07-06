@@ -31,7 +31,9 @@ func sendToken(ctx *gin.Context, role string, response AuthResponse) {
 	token, err := utilService.GetToken(response.ID, role)
 
 	if err != nil {
-		ctx.JSON(400, gin.H{"message": "Something went wrong"})
+		fmt.Println(err.Error(), "when sending token ")
+
+		ctx.JSON(400, gin.H{"message": "Something went wrong when creating token"})
 		return
 	}
 	response.Role = role
@@ -41,70 +43,58 @@ func sendToken(ctx *gin.Context, role string, response AuthResponse) {
 
 // login controller
 func Login( ctx *gin.Context){
-	//1. Get user data from request body
-	var inputUser struct {
-		Input struct{
-			Arg1 struct{
-				Email string `json:"email"`
-				Password string `json:"password"`
-			} `json:"arg1"`
-		} `json:"input"`
+
+	var input struct {
+		Email string `json:"email"`
+		Password string `json:"password"`
+		
 	}
-	
-	if err := ctx.ShouldBindJSON(&inputUser); err != nil {
+	fmt.Println("login controller", input)
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	//2.  Define the GraphQL query to execute
 	var query struct {
 		Users[] struct {
 			ID          string `json:"id"`
 			Email string `json:"email"`
-			Password string `json:"password"` 
+			Password string `json:"password"`
 			Role string `json:"role"`
-		
+
 		} `graphql:"users(where: {email: {_eq: $email}})"`
 	}
 
-	//3. construct graphql variables
 	variables := map[string]interface{}{
-		"email":  inputUser.Input.Arg1.Email,
+		"email":  input.Email,
 	}
-	//4. execute the graphql query 
 	err := utilService.Client().Query(context.Background(), &query, variables)
 	if err != nil {
-		fmt.Println(err.Error())
-		ctx.JSON(400, gin.H{"error Meassagw": "wrong token"})
+		fmt.Println(err.Error(), "when querying user to login")
+		ctx.JSON(400, gin.H{"message": "there is no user with this email"})
 		return
 	}
-
-	//5. Check if the user exists and the password is correct
-	if len(query.Users) > 0 && utilService.ComparePasswords(query.Users[0].Password, inputUser.Input.Arg1.Password) {
-		// if the user exists, send the token with user data
+	if len(query.Users) > 0 && utilService.ComparePasswords(query.Users[0].Password, input.Password) {
 		var response AuthResponse
 		response.ID = query.Users[0].ID
 		response.Role = query.Users[0].Role
 		sendToken(ctx, query.Users[0].Role, response)
 		return
 	}else{
-		// if there is no user the send invalid credential message
 		ctx.JSON(400, gin.H{"message": "Invalid credentials"})
+		return
 	}
+
+	
 
 }
 // signup controller
 func Signup(ctx *gin.Context) {
     //1. Get the user input from the request body
     type inputUser struct {
-		Input struct{
-			Arg1 struct{
-				FirstName string `json:"firstName"`
-				LastName string `json:"lastName"`
-				Email string `json:"email"`
-				Password string `json:"password"`
-				Token string `json:"token"`
-			} `json:"arg1"`
-		} `json:"input"`
+		FirstName string `json:"firstName"`
+		LastName string `json:"lastName"`
+		Email string `json:"email"`
+		Password string `json:"password"`
     }
 
 	var newUser inputUser
@@ -113,7 +103,6 @@ func Signup(ctx *gin.Context) {
         return
     }
 	fmt.Printf("%+v\n", newUser, "new user coming")
-	return
 
 	//3. Define the GraphQL mutation string
 	var mutation struct {
@@ -125,21 +114,24 @@ func Signup(ctx *gin.Context) {
 	}
 
 	// 3. hash password 
-	password, err4 := utilService.HashPassword(newUser.Input.Arg1.Password)
+	password, err4 := utilService.HashPassword(newUser.Password)
 	if err4 != nil {
+		fmt.Println(err4.Error(), "when hashing password")
 		ctx.JSON(400, gin.H{"error": err4.Error()})
 		return
 	}
 	//4.  construct graphql variable
 	variables := map[string]interface{}{
-		"firstName":  newUser.Input.Arg1.FirstName,
-		"lastName":  newUser.Input.Arg1.LastName,
-		"email":  newUser.Input.Arg1.Email,
+		"firstName":  newUser.FirstName,
+		"lastName":  newUser.LastName,
+		"email":  newUser.Email,
 		"password": password,
 	}
 	//5. execute the request
 	err := utilService.Client().Mutate(context.Background(), &mutation, variables)
 	if err != nil {
+		fmt.Println(err.Error(), "when excuting signup  mutation")
+
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -167,27 +159,11 @@ func CheckAPI( ctx *gin.Context){
 
 // forgot password controller
 func ForgotPassword( ctx *gin.Context){
-	//1. Get user data from request body
+	
 
-	var input struct {
-		Email string `json:"email"`
-		
-	}
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		fmt.Println(err.Error())
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	fmt.Println(input.Email)
-	ctx.JSON(200, gin.H{"message": "API is working"})
-
-	return 
+	// 1. Get the user input from the request body
 	var inputUser struct {
-		Input struct{
-			Arg1 struct{
-				Email string `json:"email"`
-			} `json:"arg1"`
-		} `json:"input"`
+		Email string `json:"email"`	
 	}
 	
 	if err1 := ctx.ShouldBindJSON(&inputUser); err1 != nil {
@@ -203,20 +179,21 @@ func ForgotPassword( ctx *gin.Context){
 	}
 	//3. construct graphql variables
 	variables := map[string]interface{}{
-		"email":  inputUser.Input.Arg1.Email,
+		"email":  inputUser.Email,
 	}
-	fmt.Println(inputUser.Input.Arg1.Email, "email comes here")
+	fmt.Println(inputUser.Email, "email comes here")
 	//4 execute the request 
 	err2 := utilService.Client().Query(context.Background(), &query, variables)
 	if err2 != nil {
-		fmt.Println(err2.Error())
+		fmt.Println(err2.Error(), "when quering user to forgot password")
 		ctx.JSON(400, gin.H{"message": "Something went  wrong when quering"})
 		return
 	}
 
 	//5.  Check if the user exists
 	if len(query.User) == 0  {
-		message := fmt.Sprintf("There is no User with email  %s ", inputUser.Input.Arg1.Email)
+		message := fmt.Sprintf("There is no User with email  %s ", inputUser.Email)
+		fmt.Println(message)
 		ctx.JSON(400, gin.H{"message": message})
 		return
 	}
@@ -229,18 +206,17 @@ func ForgotPassword( ctx *gin.Context){
 		} `graphql:"update_users(where: {email: {_eq: $email}}, _set: {resetToken: $resetToken})"`
 	}
 	//7. create password reset token
-	token, err3 := utilService.ResetPasswordAndRegisterToken(inputUser.Input.Arg1.Email)
+	token, err3 := utilService.ResetPasswordAndRegisterToken(inputUser.Email)
 	if err3 != nil {
 		ctx.JSON(400, gin.H{"error": err3.Error()})
 		return
 	}
 
 	fmt.Println(token)
-
 	//8. construct graphql variables
 	variables2 := map[string]interface{}{
 		"resetToken":  token,
-		"email":  inputUser.Input.Arg1.Email,
+		"email":  inputUser.Email,
 	}
 	//9. execute the set password Reset token mutation
 	err4 := utilService.Client().Mutate(context.Background(), &mutation, variables2)
@@ -249,7 +225,7 @@ func ForgotPassword( ctx *gin.Context){
 		return
 	}
 	//10. Send password reset token to user by  email
-	message, err5 := utilService.SendTokenEmail(inputUser.Input.Arg1.Email, token, "Reset your password")
+	message, err5 := utilService.SendTokenEmail(inputUser.Email, token, "Reset your password")
 	if err5 != nil {
 		fmt.Println("There is error when sending email")
 		ctx.JSON(400, gin.H{"error": err5.Error()})
@@ -351,15 +327,13 @@ func ResetPassword(ctx *gin.Context){
 func UpdateUser(ctx *gin.Context){	
 	//1. Get user data from request body
 	var inputUser struct {
-		Input struct{
-			Arg1 struct{
-				FirstName string `json:"firstName"`
-				LastName string `json:"lastName"`
-				Email string `json:"email"`
-				Password string `json:"password"`
-				NewPassword string `json:"newPassword"`
-			} `json:"arg1"`
-		} `json:"input"`
+		
+		FirstName string `json:"firstName"`
+		LastName string `json:"lastName"`
+		Email string `json:"email"`
+		Password string `json:"password"`
+		NewPassword string `json:"newPassword"`
+	
 	}
 	
 	if err := ctx.ShouldBindJSON(&inputUser); err != nil {
@@ -379,7 +353,7 @@ func UpdateUser(ctx *gin.Context){
 
 	//3. variables
 	variables := map[string]interface{}{
-		"email":  inputUser.Input.Arg1.Email,
+		"email":  inputUser.Email,
 	}
 	//4. execute the request 
 	err := utilService.Client().Query(context.Background(), &query, variables)
@@ -390,13 +364,13 @@ func UpdateUser(ctx *gin.Context){
 	}
 
 	//5.  Check if the user exists and the password is correct
-	if len(query.Users) > 0 && utilService.ComparePasswords(query.Users[0].Password, inputUser.Input.Arg1.Password) {
+	if len(query.Users) > 0 && utilService.ComparePasswords(query.Users[0].Password, inputUser.Password) {
 		// if the user exists, send the token with user data
 		// change password
 		var newPassword = query.Users[0].Password
 		// check if there is new password then hash the new password
-		if(inputUser.Input.Arg1.NewPassword != ""){
-			password, err4 := utilService.HashPassword(inputUser.Input.Arg1.NewPassword)
+		if(inputUser.NewPassword != ""){
+			password, err4 := utilService.HashPassword(inputUser.NewPassword)
 			newPassword = password
 			if err4 != nil {
 				ctx.JSON(400, gin.H{"error": err4.Error()})
@@ -417,9 +391,9 @@ func UpdateUser(ctx *gin.Context){
 		
 		variables2 := map[string]interface{}{
 			"password":  newPassword,
-			"firstName":  inputUser.Input.Arg1.FirstName,
-			"lastName":  inputUser.Input.Arg1.LastName,
-			"email":  inputUser.Input.Arg1.Email,
+			"firstName":  inputUser.FirstName,
+			"lastName":  inputUser.LastName,
+			"email":  inputUser.Email,
 		}
 		//3. execute the request
 		err5 := utilService.Client().Mutate(context.Background(), &mutation, variables2)

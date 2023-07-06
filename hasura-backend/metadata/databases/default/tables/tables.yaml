@@ -2,6 +2,7 @@
 - "!include public_bookings.yaml"
 - "!include public_contacts.yaml"
 - "!include public_directors.yaml"
+- "!include public_faqs.yaml"
 - "!include public_generes.yaml"
 - "!include public_images.yaml"
 - "!include public_movies.yaml"

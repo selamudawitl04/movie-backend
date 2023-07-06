@@ -51,6 +51,12 @@ array_relationships:
         table:
           name: tickets
           schema: public
+computed_fields:
+  - name: rating_average
+    definition:
+      function:
+        name: calculate_movie_rating_v4
+        schema: public
 select_permissions:
   - role: anmu
     permission:
@@ -73,6 +79,8 @@ select_permissions:
         - cover_image
         - director_id
         - id
+      computed_fields:
+        - rating_average
       filter: {}
       allow_aggregations: true
   - role: user
@@ -86,4 +94,7 @@ select_permissions:
         - id
         - status
         - title
+      computed_fields:
+        - rating_average
       filter: {}
+      allow_aggregations: true

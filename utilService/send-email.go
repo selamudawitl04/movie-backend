@@ -44,11 +44,12 @@ func SendTokenEmail(email string, token string, header string) (string, error) {
 }
 // send email
 func SendMessageEmail(email string, message string, header string) (string, error) {
-	// Send an email to the user with a link to reset their password
-	from := "selamu.dawit@aastustudent.edu.et"
+	from := "selamudev@gmail.com"
 	to := email
 	 // Create the reset URL with the token
-	auth := smtp.PlainAuth("", "bb0fbe593f233b", "2f47796776dd86", "sandbox.smtp.mailtrap.io")
+	// auth := smtp.PlainAuth("", "bb0fbe593f233b", "2f47796776dd86", "sandbox.smtp.mailtrap.io")
+	smtpServer := "smtp.gmail.com" 
+	auth := smtp.PlainAuth("movie server", "selamudev@gmail.com", "tqfcwelwnlavtreh", smtpServer)
    
    t, _ := template.ParseFiles("replyTemplate.html")
 
@@ -56,6 +57,7 @@ func SendMessageEmail(email string, message string, header string) (string, erro
    mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
    body.Write([]byte(fmt.Sprintf("Subject: This is a test subject \n%s\n\n", mimeHeaders)))
    var newHeader = fmt.Sprintf("%s to: %s", header, email)
+   fmt.Println(newHeader ,"from sending email")
 	// Define the email data
    emailData := EmailDataMessage{
 	   Message: message,
@@ -63,11 +65,7 @@ func SendMessageEmail(email string, message string, header string) (string, erro
    }
    t.Execute(&body, emailData)
 
-	err := smtp.SendMail("sandbox.smtp.mailtrap.io:2525", auth, from, []string{to}, body.Bytes())
+	err := smtp.SendMail("smtp.gmail.com:587", auth, from, []string{to}, body.Bytes())
 	return "Email sent", err
 }
-
-
-
-
 
