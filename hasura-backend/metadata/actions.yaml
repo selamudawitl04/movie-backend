@@ -2,7 +2,7 @@ actions:
   - name: forgotPassword
     definition:
       kind: synchronous
-      handler: https://localhost:7000/forgotPassword
+      handler: http://localhost:7000/forgotPassword
       forward_client_headers: true
       timeout: 15
       request_transform:
@@ -37,7 +37,7 @@ actions:
   - name: resetPassword
     definition:
       kind: synchronous
-      handler: https://96b4-196-188-12-61.in.ngrok.io/resetPassword
+      handler: http://localhost:7000/resetPassword
       timeout: 10
     permissions:
       - role: anmu
@@ -75,15 +75,26 @@ actions:
   - name: updateUser
     definition:
       kind: synchronous
-      handler: https://localhost:7000/updateUser
+      handler: http://localhost:7000/updateUser
       timeout: 12
+      request_transform:
+        body:
+          action: transform
+          template: "{\n  \n    \"firstName\": {{$body.input.arg1.firstName}},\n    \"lastName\": {{$body.input.arg1.lastName}},\n    \"email\": {{$body.input.arg1.email}},\n    \"newPassword\": {{$body.input.arg1.newPassword}},\n    \"password\": {{$body.input.arg1.password}}\n  \n}"
+        template_engine: Kriti
+        version: 2
     permissions:
       - role: user
   - name: uploadImages
     definition:
       kind: synchronous
-      handler: https://cf7f-169-150-218-74.eu.ngrok.io/uploadImage
+      handler: http://localhost:7000/uploadImage
       timeout: 15
+      request_transform:
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
     permissions:
       - role: user
 custom_types:

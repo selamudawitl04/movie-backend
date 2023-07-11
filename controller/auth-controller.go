@@ -5,7 +5,8 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
+	"bytes"
+	"html/template"
 	"gilab.com/progrmaticreviwes/golang-gin-poc/utilService"
 	"github.com/gin-gonic/gin"
 )
@@ -17,11 +18,11 @@ type AuthResponse struct{
 	Token string `json:"token"`
 }
 
-
-
-
-
-
+// to send email to user
+type EmailDataToken struct {
+    Link string
+	Header string
+}
 
 
 
@@ -160,7 +161,7 @@ func CheckAPI( ctx *gin.Context){
 // forgot password controller
 func ForgotPassword( ctx *gin.Context){
 	
-
+	fmt.Println("forgot password controller")
 	// 1. Get the user input from the request body
 	var inputUser struct {
 		Email string `json:"email"`	
@@ -170,6 +171,8 @@ func ForgotPassword( ctx *gin.Context){
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err1.Error()})
 		return
 	}
+
+	fmt.Println(inputUser.Email, "email comes here")
     
 	//2.  Define the GraphQL query to execute
 	var query struct {
@@ -225,7 +228,24 @@ func ForgotPassword( ctx *gin.Context){
 		return
 	}
 	//10. Send password reset token to user by  email
-	message, err5 := utilService.SendTokenEmail(inputUser.Email, token, "Reset your password")
+
+	
+	// Create the reset URL with the token
+	resetURL := "http://localhost:3000/auth/resetPassword/" + token
+	t, _ := template.ParseFiles("template.html")
+	var body bytes.Buffer   
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body.Write([]byte(fmt.Sprintf("Subject: Reset password from Solflx \n%s\n\n", mimeHeaders)))
+	 // Define the email data
+
+	
+	emailData := EmailDataToken{
+        Link: resetURL,
+		Header:"Reset your password with above link" ,
+    }
+	t.Execute(&body, emailData)
+ 
+	message, err5 := utilService.SendEmail(inputUser.Email, body)
 	if err5 != nil {
 		fmt.Println("There is error when sending email")
 		ctx.JSON(400, gin.H{"error": err5.Error()})
