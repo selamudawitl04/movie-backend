@@ -85,7 +85,6 @@ func ResetPasswordAndRegisterToken(email string)(string, error){
 
 
 
-
 	
 
 
