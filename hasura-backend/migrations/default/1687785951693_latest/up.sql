@@ -1,15 +1,4 @@
-SET check_function_bodies = false;
-CREATE FUNCTION public.calculate_movie_rating(movie_id integer) RETURNS double precision
-    LANGUAGE plpgsql
-    AS $_$
-BEGIN
-  RETURN (
-    SELECT AVG(rating)
-    FROM reviews
-    WHERE movie_id = $1
-  );
-END;
-$_$;
+
 CREATE TABLE public.actors (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     first_name text NOT NULL,
